@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wair Setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            wairBlue: '#2E4CF6',
+            wairMagenta: '#C73CF6',
+            wairCyan: '#20C6F6',
+            wairSlate: '#0F172A',
+          },
+          boxShadow: {
+            glow: '0 0 45px rgba(80, 219, 255, 0.35)',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: radial-gradient(circle at top, rgba(38, 77, 255, 0.35), transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(219, 39, 119, 0.18), transparent 45%),
+        #020617;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .mood-card {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .mood-card::before {
+      content: '';
+      position: absolute;
+      inset: -60%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+      opacity: 0.75;
+      animation: glowPulse 6s ease-in-out infinite;
+      z-index: -2;
+    }
+
+    .mood-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, rgba(148, 163, 184, 0.06), transparent);
+      z-index: -1;
+      mix-blend-mode: screen;
+    }
+
+    .mood-card[data-mood='high-stress']::before {
+      background: radial-gradient(circle, rgba(252, 165, 165, 0.28) 0%, transparent 70%);
+    }
+
+    .mood-card[data-mood='resting']::before {
+      background: radial-gradient(circle, rgba(110, 231, 183, 0.24) 0%, transparent 70%);
+    }
+
+    .mood-card[data-mood='energized']::before {
+      background: radial-gradient(circle, rgba(96, 165, 250, 0.28) 0%, transparent 70%);
+    }
+
+    @keyframes glowPulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.65;
+      }
+      50% {
+        transform: scale(1.12);
+        opacity: 0.9;
+      }
+    }
+
+    .activity-ring::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25), transparent 70%);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 antialiased">
+  <main class="mx-auto flex min-h-screen max-w-md flex-col gap-8 px-5 pb-20 pt-10">
+    <header class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-semibold tracking-tight text-white">wair Setup</h1>
+        <p class="mt-2 text-sm text-slate-400">
+          Connected to <span class="font-medium text-slate-100">Apple Watch Ultra 2</span>
+        </p>
+      </div>
+      <button
+        type="button"
+        class="rounded-full bg-slate-800/60 p-3 text-slate-300 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wairCyan"
+        aria-label="Open settings"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M10.5 4.5L9.75 3 8.25 3l-.75 1.5-1.5.75-.75 1.5.75 1.5L6 10.5 7.5 11l1.5-.75.75-1.5.75-1.5 1.5-.75.75-1.5-.75-1.5-1.5-.75zm3 15l-.75 1.5-1.5.75-.75-1.5-1.5-.75-.75-1.5.75-1.5L9 13.5l1.5-.75 1.5.75.75 1.5.75 1.5 1.5.75.75 1.5-.75 1.5-1.5.75zM12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z"
+          />
+        </svg>
+      </button>
+    </header>
+
+    <section
+      class="mood-card rounded-3xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-950/80 p-6 shadow-glow"
+      data-mood="high-stress"
+    >
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Inferred Vibe</p>
+          <h2 class="mt-3 text-4xl font-semibold text-rose-200">High Stress</h2>
+          <p class="mt-2 text-sm text-slate-200/90">
+            Take a micro-break now. Try 2 minutes of guided breathing to reset your baseline.
+          </p>
+        </div>
+        <span
+          class="inline-flex items-center gap-2 rounded-full bg-rose-600/20 px-3 py-1 text-[0.7rem] font-medium uppercase tracking-wide text-rose-200 ring-1 ring-rose-500/40"
+        >
+          Live
+          <span class="h-1.5 w-1.5 animate-ping rounded-full bg-rose-300"></span>
+        </span>
+      </div>
+      <dl class="mt-7 grid grid-cols-3 gap-4 text-sm text-slate-100">
+        <div class="rounded-2xl border border-slate-700/40 bg-slate-900/50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-400">Heart Rate</dt>
+          <dd class="mt-2 text-xl font-semibold text-white">96 bpm</dd>
+          <p class="text-[0.7rem] text-slate-400">+14 from baseline</p>
+        </div>
+        <div class="rounded-2xl border border-slate-700/40 bg-slate-900/50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-400">Sleep Score</dt>
+          <dd class="mt-2 text-xl font-semibold text-white">78</dd>
+          <p class="text-[0.7rem] text-slate-400">Last night</p>
+        </div>
+        <div class="rounded-2xl border border-slate-700/40 bg-slate-900/50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-400">Movement</dt>
+          <dd class="mt-3 flex items-center gap-3 text-white">
+            <span
+              class="relative h-12 w-12 rounded-full bg-slate-800/60 ring-2 ring-offset-2 ring-offset-slate-950"
+              style="--tw-ring-color: rgba(255,64,128,0.7)"
+            >
+              <span
+                class="absolute inset-1 rounded-full border-2 border-t-wairMagenta/80 border-r-wairMagenta/30 border-b-transparent border-l-transparent"
+              ></span>
+              <span class="activity-ring absolute inset-0 rounded-full bg-slate-900/80"></span>
+            </span>
+            <span class="text-xl font-semibold">44%</span>
+          </dd>
+          <p class="mt-1 text-[0.7rem] text-slate-400">Activity ring</p>
+        </div>
+      </dl>
+    </section>
+
+    <section class="space-y-5 rounded-3xl border border-slate-800/60 bg-slate-900/70 p-6 shadow-inner shadow-slate-950/30">
+      <header>
+        <h3 class="text-xl font-semibold text-white">Regulate Towards Your Ideal Vibe</h3>
+        <p class="mt-2 text-sm text-slate-400">The wair Agent will guide you to this state.</p>
+      </header>
+      <div class="no-scrollbar flex gap-3 overflow-x-auto pb-1">
+        <div class="min-w-[120px] shrink-0">
+          <input type="radio" name="vibe-option" id="vibe-happy" value="happy" class="peer sr-only" checked />
+          <label
+            for="vibe-happy"
+            class="flex h-28 flex-col justify-between rounded-2xl bg-gradient-to-br from-amber-400/40 via-rose-400/30 to-purple-500/40 p-4 text-left text-white ring-1 ring-white/10 transition peer-checked:shadow-[0_0_0_2px_rgba(255,255,255,0.3)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide">Happy</span>
+            <span class="text-[0.73rem] text-white/80">Bright, social energy</span>
+          </label>
+        </div>
+        <div class="min-w-[120px] shrink-0">
+          <input type="radio" name="vibe-option" id="vibe-chill" value="chill" class="peer sr-only" />
+          <label
+            for="vibe-chill"
+            class="flex h-28 flex-col justify-between rounded-2xl bg-gradient-to-br from-blue-500/30 via-cyan-500/30 to-emerald-500/30 p-4 text-left text-white ring-1 ring-white/10 transition peer-checked:shadow-[0_0_0_2px_rgba(32,198,246,0.6)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide">Chill</span>
+            <span class="text-[0.73rem] text-white/80">Breath-led calm</span>
+          </label>
+        </div>
+        <div class="min-w-[120px] shrink-0">
+          <input type="radio" name="vibe-option" id="vibe-energized" value="energized" class="peer sr-only" />
+          <label
+            for="vibe-energized"
+            class="flex h-28 flex-col justify-between rounded-2xl bg-gradient-to-br from-purple-500/40 via-blue-500/30 to-sky-400/40 p-4 text-left text-white ring-1 ring-white/10 transition peer-checked:shadow-[0_0_0_2px_rgba(80,219,255,0.5)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide">Energized</span>
+            <span class="text-[0.73rem] text-white/80">Power through</span>
+          </label>
+        </div>
+        <div class="min-w-[120px] shrink-0">
+          <input type="radio" name="vibe-option" id="vibe-focused" value="focused" class="peer sr-only" />
+          <label
+            for="vibe-focused"
+            class="flex h-28 flex-col justify-between rounded-2xl bg-gradient-to-br from-violet-500/40 via-fuchsia-500/30 to-indigo-500/40 p-4 text-left text-white ring-1 ring-white/10 transition peer-checked:shadow-[0_0_0_2px_rgba(199,60,246,0.55)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide">Focused</span>
+            <span class="text-[0.73rem] text-white/80">Deep work mode</span>
+          </label>
+        </div>
+        <div class="min-w-[140px] shrink-0">
+          <input type="radio" name="vibe-option" id="vibe-custom" value="custom" class="peer sr-only" />
+          <label
+            for="vibe-custom"
+            class="flex h-28 flex-col justify-between rounded-2xl border border-dashed border-slate-600/70 bg-slate-800/60 p-4 text-left text-white transition peer-checked:border-wairCyan/70 peer-checked:bg-slate-800/80 peer-checked:shadow-[0_0_0_2px_rgba(32,198,246,0.4)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="text-sm font-semibold uppercase tracking-wide text-slate-200">Define Custom</span>
+            <span class="text-[0.73rem] text-slate-400">Name your desired vibe</span>
+          </label>
+          <div class="mt-3 hidden flex-col gap-2 peer-checked:flex">
+            <label for="custom-vibe-input" class="text-xs uppercase tracking-wide text-slate-400">
+              Your Custom Vibe
+            </label>
+            <input
+              id="custom-vibe-input"
+              type="text"
+              placeholder="Creative Flow"
+              class="w-full rounded-xl border border-slate-700/60 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-wairCyan focus:outline-none focus:ring-2 focus:ring-wairCyan/60"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="space-y-6 rounded-3xl border border-slate-800/60 bg-slate-900/70 p-6 shadow-inner shadow-slate-950/40">
+      <header>
+        <h3 class="text-xl font-semibold text-white">AI Watch Face Creation</h3>
+        <p class="mt-2 text-sm text-slate-400">
+          Choose a design category, describe your concept, and let wair craft it for your watch.
+        </p>
+      </header>
+      <fieldset class="grid grid-cols-3 gap-2 text-sm text-white">
+        <legend class="sr-only">Design Category</legend>
+        <div>
+          <input
+            type="radio"
+            name="category"
+            id="category-freeform"
+            value="freeform"
+            class="peer sr-only"
+            checked
+          />
+          <label
+            for="category-freeform"
+            class="flex flex-col items-center gap-3 rounded-2xl border border-slate-700/60 bg-slate-800/70 px-3 py-4 text-center transition hover:border-slate-600 peer-checked:border-wairCyan/70 peer-checked:bg-slate-800 peer-checked:shadow-[0_0_0_2px_rgba(32,198,246,0.35)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500/70 via-fuchsia-500/70 to-sky-500/70 text-slate-50 shadow-glow">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M6.75 3.75l10.5 16.5M6.75 20.25l10.5-16.5" />
+              </svg>
+            </span>
+            <span class="text-xs uppercase tracking-wide text-slate-200">Freeform</span>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="category" id="category-graphic" value="graphic" class="peer sr-only" />
+          <label
+            for="category-graphic"
+            class="flex flex-col items-center gap-3 rounded-2xl border border-slate-700/60 bg-slate-800/70 px-3 py-4 text-center transition hover:border-slate-600 peer-checked:border-wairCyan/70 peer-checked:bg-slate-800 peer-checked:shadow-[0_0_0_2px_rgba(32,198,246,0.35)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/80 text-slate-50 ring-1 ring-slate-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 4a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2H4a2 2 0 01-2-2V4zM11 4a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2h-3a2 2 0 01-2-2V4zM2 13a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2H4a2 2 0 01-2-2v-3zM11 13a2 2 0 012-2h3a2 2 0 012 2v3a2 2 0 01-2 2h-3a2 2 0 01-2-2v-3z" />
+              </svg>
+            </span>
+            <span class="text-xs uppercase tracking-wide text-slate-200">Graphic</span>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="category" id="category-mask" value="mask" class="peer sr-only" />
+          <label
+            for="category-mask"
+            class="flex flex-col items-center gap-3 rounded-2xl border border-slate-700/60 bg-slate-800/70 px-3 py-4 text-center transition hover:border-slate-600 peer-checked:border-wairCyan/70 peer-checked:bg-slate-800 peer-checked:shadow-[0_0_0_2px_rgba(32,198,246,0.35)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-50 ring-1 ring-slate-600/70">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 4.5l7.5 7.5L12 19.5 4.5 12z" />
+              </svg>
+            </span>
+            <span class="text-xs uppercase tracking-wide text-slate-200">3D Mask</span>
+          </label>
+        </div>
+      </fieldset>
+      <div>
+        <label for="watch-face-prompt" class="text-xs uppercase tracking-wide text-slate-400">
+          Prompt your generative watch face
+        </label>
+        <textarea
+          id="watch-face-prompt"
+          rows="4"
+          placeholder="Ethereal purple smoke moving slowly"
+          class="mt-3 w-full rounded-2xl border border-slate-700/70 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-wairCyan focus:outline-none focus:ring-2 focus:ring-wairCyan/50"
+        ></textarea>
+      </div>
+      <button
+        type="button"
+        class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-wairBlue via-wairMagenta to-wairCyan px-4 py-3 text-sm font-semibold text-white shadow-[0_20px_45px_-24px_rgba(46,76,246,0.8)] transition hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wairCyan"
+      >
+        Generate &amp; Apply Face
+      </button>
+
+      <fieldset class="space-y-4">
+        <legend class="text-sm font-semibold uppercase tracking-wide text-slate-300">
+          Reactive Animation Mode
+        </legend>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div class="rounded-2xl border border-slate-700/60 bg-slate-900/80 p-4">
+            <input type="radio" name="animation-mode" id="mode-still" value="still" class="peer sr-only" />
+            <label
+              for="mode-still"
+              class="flex items-center gap-3 text-sm text-slate-200 transition peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+            >
+              <span
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800/70 text-slate-300 ring-1 ring-slate-700/60 peer-checked:bg-slate-100/10 peer-checked:text-white"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </span>
+              <span class="flex flex-col">
+                <span class="font-semibold">Still</span>
+                <span class="text-xs text-slate-400">Static graphic, max battery</span>
+              </span>
+            </label>
+          </div>
+          <div class="rounded-2xl border border-slate-700/60 bg-slate-900/80 p-4">
+            <input
+              type="radio"
+              name="animation-mode"
+              id="mode-auto"
+              value="auto"
+              class="peer sr-only"
+              checked
+            />
+            <label
+              for="mode-auto"
+              class="flex items-center gap-3 text-sm text-slate-200 transition peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+            >
+              <span
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800/70 text-slate-300 ring-1 ring-slate-700/60 peer-checked:bg-slate-100/10 peer-checked:text-white"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4 12a8 8 0 0116 0M4 12a8 8 0 0016 0" />
+                </svg>
+              </span>
+              <span class="flex flex-col">
+                <span class="font-semibold">Auto-Animation</span>
+                <span class="text-xs text-slate-400">Smooth, continuous motion</span>
+              </span>
+            </label>
+          </div>
+          <div class="rounded-2xl border border-slate-700/60 bg-slate-900/80 p-4">
+            <input type="radio" name="animation-mode" id="mode-body" value="body" class="peer sr-only" />
+            <label
+              for="mode-body"
+              class="flex items-center gap-3 text-sm text-slate-200 transition peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+            >
+              <span
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800/70 text-slate-300 ring-1 ring-slate-700/60 peer-checked:bg-slate-100/10 peer-checked:text-white"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4.5 9a7.5 7.5 0 0115 0c0 7.5-7.5 12-7.5 12S4.5 16.5 4.5 9z" />
+                </svg>
+              </span>
+              <span class="flex flex-col">
+                <span class="font-semibold">Body Mode</span>
+                <span class="text-xs text-slate-400">Movement-driven intensity</span>
+              </span>
+            </label>
+          </div>
+          <div class="rounded-2xl border border-slate-700/60 bg-slate-900/80 p-4">
+            <input type="radio" name="animation-mode" id="mode-ai" value="ai" class="peer sr-only" />
+            <label
+              for="mode-ai"
+              class="flex items-center gap-3 text-sm text-slate-200 transition peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+            >
+              <span
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800/70 text-slate-300 ring-1 ring-slate-700/60 peer-checked:bg-slate-100/10 peer-checked:text-white"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.6"
+                    d="M12 6.75a3 3 0 110 6 3 3 0 010-6zM6.75 12a5.25 5.25 0 0110.5 0 5.25 5.25 0 01-10.5 0z"
+                  />
+                </svg>
+              </span>
+              <span class="flex flex-col">
+                <span class="font-semibold">AI Mode</span>
+                <span class="text-xs text-slate-400">Emotionally responsive</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="space-y-6 rounded-3xl border border-slate-800/60 bg-slate-900/70 p-6 shadow-inner shadow-slate-950/40">
+      <header>
+        <h3 class="text-xl font-semibold text-white">Connect wair Agent</h3>
+        <p class="mt-2 text-sm text-slate-400">Choose your AI companion and tune how the agent interacts with you.</p>
+      </header>
+      <fieldset class="grid grid-cols-3 gap-3">
+        <legend class="sr-only">AI Providers</legend>
+        <div>
+          <input
+            type="radio"
+            name="agent-provider"
+            id="agent-gemini"
+            value="gemini"
+            class="peer sr-only"
+            checked
+          />
+          <label
+            for="agent-gemini"
+            class="flex flex-col items-center gap-2 rounded-2xl border border-slate-700/60 bg-slate-900/80 px-3 py-4 text-center text-sm text-slate-200 transition hover:border-slate-600 peer-checked:border-wairCyan/70 peer-checked:text-white peer-checked:shadow-[0_0_0_2px_rgba(32,198,246,0.35)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-400 text-base font-semibold text-slate-950 shadow-glow">
+              G
+            </span>
+            <span class="text-xs uppercase tracking-wide">Gemini</span>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="agent-provider" id="agent-chatgpt" value="chatgpt" class="peer sr-only" />
+          <label
+            for="agent-chatgpt"
+            class="flex flex-col items-center gap-2 rounded-2xl border border-slate-700/60 bg-slate-900/80 px-3 py-4 text-center text-sm text-slate-200 transition hover:border-slate-600 peer-checked:border-wairCyan/70 peer-checked:text-white peer-checked:shadow-[0_0_0_2px_rgba(32,198,246,0.35)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-base font-semibold text-slate-950 shadow-[0_0_25px_rgba(16,185,129,0.4)]">
+              GPT
+            </span>
+            <span class="text-xs uppercase tracking-wide">ChatGPT</span>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="agent-provider" id="agent-claude" value="claude" class="peer sr-only" />
+          <label
+            for="agent-claude"
+            class="flex flex-col items-center gap-2 rounded-2xl border border-slate-700/60 bg-slate-900/80 px-3 py-4 text-center text-sm text-slate-200 transition hover:border-slate-600 peer-checked:border-wairCyan/70 peer-checked:text-white peer-checked:shadow-[0_0_0_2px_rgba(32,198,246,0.35)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-wairCyan"
+          >
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-400 to-fuchsia-500 text-base font-semibold text-slate-950 shadow-[0_0_25px_rgba(168,85,247,0.4)]">
+              C
+            </span>
+            <span class="text-xs uppercase tracking-wide">Claude</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="space-y-5">
+        <div class="space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-semibold text-slate-200">Voice Prompt Frequency</span>
+            <span
+              class="text-xs font-semibold uppercase tracking-wide text-slate-300"
+              data-output-for="voice-frequency"
+            >
+              Low
+            </span>
+          </div>
+          <input
+            id="voice-frequency"
+            type="range"
+            min="0"
+            max="3"
+            step="1"
+            value="1"
+            class="w-full accent-wairCyan"
+            aria-label="Voice prompt frequency"
+          />
+          <div class="flex justify-between text-[0.65rem] uppercase text-slate-500">
+            <span>Off</span>
+            <span>Low</span>
+            <span>Med</span>
+            <span>High</span>
+          </div>
+        </div>
+        <div class="space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-semibold text-slate-200">Haptic Cue Intensity</span>
+            <span
+              class="text-xs font-semibold uppercase tracking-wide text-slate-300"
+              data-output-for="haptic-intensity"
+            >
+              Firm
+            </span>
+          </div>
+          <input
+            id="haptic-intensity"
+            type="range"
+            min="0"
+            max="3"
+            step="1"
+            value="3"
+            class="w-full accent-wairMagenta"
+            aria-label="Haptic cue intensity"
+          />
+          <div class="flex justify-between text-[0.65rem] uppercase text-slate-500">
+            <span>Off</span>
+            <span>Gentle</span>
+            <span>Balanced</span>
+            <span>Firm</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const sliderDescriptors = [
+      { id: 'voice-frequency', stops: ['Off', 'Low', 'Medium', 'High'] },
+      { id: 'haptic-intensity', stops: ['Off', 'Gentle', 'Balanced', 'Firm'] },
+    ];
+
+    sliderDescriptors.forEach(({ id, stops }) => {
+      const input = document.getElementById(id);
+      const output = document.querySelector(`[data-output-for="${id}"]`);
+      if (!input || !output) return;
+      const update = () => {
+        const value = Number(input.value);
+        output.textContent = stops[value] ?? '';
+      };
+      input.addEventListener('input', update);
+      update();
+    });
+  </script>
+</body>
+</html>
