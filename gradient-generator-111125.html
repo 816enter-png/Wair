@@ -3369,33 +3369,7 @@
         }
 
         init();
-        
-        // Test popup visibility after a short delay
-        setTimeout(() => {
-            const testPopup = document.getElementById('colorPickerPopup');
-            console.log('=== POPUP TEST ===');
-            console.log('Popup element:', testPopup);
-            if (testPopup) {
-                console.log('Popup exists in DOM');
-                console.log('Initial display:', window.getComputedStyle(testPopup).display);
-                console.log('Initial visibility:', window.getComputedStyle(testPopup).visibility);
-                console.log('Initial classes:', testPopup.classList.toString());
-                // Temporarily show it to test
-                testPopup.style.display = 'block';
-                testPopup.style.left = '50%';
-                testPopup.style.top = '50%';
-                testPopup.style.transform = 'translate(-50%, -50%)';
-                testPopup.style.zIndex = '9999';
-                console.log('Popup forced visible for 2 seconds...');
-                setTimeout(() => {
-                    testPopup.style.display = 'none';
-                    console.log('Popup hidden again');
-                }, 2000);
-            } else {
-                console.error('POPUP ELEMENT NOT FOUND IN DOM!');
-            }
-        }, 1000);
-        
+
         // Initialize correct distortion style buttons based on initial shape
         const sphereStyles = document.getElementById('sphereDistortionStyles');
         const torusStyles = document.getElementById('torusDistortionStyles');
