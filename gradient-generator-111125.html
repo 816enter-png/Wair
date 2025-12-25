@@ -2580,51 +2580,72 @@
             // Setup custom color picker for gradient colors
             function setupCustomColorPicker(
                 gradientSelector, selectorCircle, hueSlider, hueHandle, huePreview,
-                rInput, gInput, bInput, hexInput, 
+                rInput, gInput, bInput, hexInput,
                 isBackground = false
             ) {
+                // Check if all required elements exist
+                if (!gradientSelector || !selectorCircle || !hueSlider || !hueHandle ||
+                    !huePreview || !rInput || !gInput || !bInput || !hexInput) {
+                    console.error('setupCustomColorPicker: Missing required elements', {
+                        gradientSelector: !!gradientSelector,
+                        selectorCircle: !!selectorCircle,
+                        hueSlider: !!hueSlider,
+                        hueHandle: !!hueHandle,
+                        huePreview: !!huePreview,
+                        rInput: !!rInput,
+                        gInput: !!gInput,
+                        bInput: !!bInput,
+                        hexInput: !!hexInput
+                    });
+                    // Return a no-op function to prevent errors
+                    return function() {};
+                }
+
                 let currentHue = 0;
                 let currentSat = 100;
                 let currentLight = 50;
                 let isDraggingGradient = false;
                 let isDraggingHue = false;
-                
+
                 // Update gradient background based on hue
                 function updateGradientBackground() {
+                    if (!gradientSelector) return;
                     const hueColor = `hsl(${currentHue}, 100%, 50%)`;
                     gradientSelector.style.background = `
-                        linear-gradient(to bottom, 
-                            rgba(255,255,255,1) 0%, 
-                            rgba(255,255,255,0) 50%, 
-                            rgba(0,0,0,0) 50%, 
+                        linear-gradient(to bottom,
+                            rgba(255,255,255,1) 0%,
+                            rgba(255,255,255,0) 50%,
+                            rgba(0,0,0,0) 50%,
                             rgba(0,0,0,1) 100%),
                         linear-gradient(to right, #808080 0%, ${hueColor} 100%)`;
                 }
                 
                 // Update selector circle position
                 function updateSelectorPosition() {
+                    if (!selectorCircle) return;
                     const x = currentSat;
                     const y = 100 - currentLight;
                     selectorCircle.style.left = x + '%';
                     selectorCircle.style.top = y + '%';
                 }
-                
+
                 // Update hue handle position
                 function updateHueHandlePosition() {
+                    if (!hueHandle) return;
                     const x = (currentHue / 360) * 100;
                     hueHandle.style.left = x + '%';
                 }
-                
+
                 // Update all inputs from HSL
                 function updateFromHSL() {
                     const rgb = hslToRgb(currentHue, currentSat, currentLight);
                     const hexColor = rgbToHex(rgb.r, rgb.g, rgb.b);
-                    
-                    rInput.value = rgb.r;
-                    gInput.value = rgb.g;
-                    bInput.value = rgb.b;
-                    hexInput.value = hexColor;
-                    huePreview.style.backgroundColor = hexColor;
+
+                    if (rInput) rInput.value = rgb.r;
+                    if (gInput) gInput.value = rgb.g;
+                    if (bInput) bInput.value = rgb.b;
+                    if (hexInput) hexInput.value = hexColor;
+                    if (huePreview) huePreview.style.backgroundColor = hexColor;
                     
                     // Update the actual color
                     if (isBackground) {
@@ -2649,34 +2670,40 @@
                 }
                 
                 // Gradient selector interaction
-                gradientSelector.addEventListener('mousedown', (e) => {
-                    isDraggingGradient = true;
-                    updateGradientSelection(e);
-                });
-                
                 function updateGradientSelection(e) {
+                    if (!gradientSelector) return;
                     const rect = gradientSelector.getBoundingClientRect();
                     const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
                     const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-                    
+
                     currentSat = x;
                     currentLight = 100 - y;
                     updateFromHSL();
                 }
-                
+
+                if (gradientSelector) {
+                    gradientSelector.addEventListener('mousedown', (e) => {
+                        isDraggingGradient = true;
+                        updateGradientSelection(e);
+                    });
+                }
+
                 // Hue slider interaction
-                hueSlider.addEventListener('mousedown', (e) => {
-                    if (e.target === hueSlider || e.target === hueHandle) {
-                        isDraggingHue = true;
-                        updateHueSelection(e);
-                    }
-                });
-                
                 function updateHueSelection(e) {
+                    if (!hueSlider) return;
                     const rect = hueSlider.getBoundingClientRect();
                     const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
                     currentHue = (x / 100) * 360;
                     updateFromHSL();
+                }
+
+                if (hueSlider) {
+                    hueSlider.addEventListener('mousedown', (e) => {
+                        if (e.target === hueSlider || e.target === hueHandle) {
+                            isDraggingHue = true;
+                            updateHueSelection(e);
+                        }
+                    });
                 }
                 
                 // Global mouse move and up
@@ -2694,36 +2721,42 @@
                 });
                 
                 // RGB input handlers
-                [rInput, gInput, bInput].forEach(input => {
-                    input.addEventListener('input', () => {
-                        const r = parseInt(rInput.value) || 0;
-                        const g = parseInt(gInput.value) || 0;
-                        const b = parseInt(bInput.value) || 0;
-                        
-                        const hsl = rgbToHsl(r, g, b);
-                        currentHue = hsl.h;
-                        currentSat = hsl.s;
-                        currentLight = hsl.l;
-                        updateFromHSL();
+                if (rInput && gInput && bInput) {
+                    [rInput, gInput, bInput].forEach(input => {
+                        if (input) {
+                            input.addEventListener('input', () => {
+                                const r = parseInt(rInput.value) || 0;
+                                const g = parseInt(gInput.value) || 0;
+                                const b = parseInt(bInput.value) || 0;
+
+                                const hsl = rgbToHsl(r, g, b);
+                                currentHue = hsl.h;
+                                currentSat = hsl.s;
+                                currentLight = hsl.l;
+                                updateFromHSL();
+                            });
+                        }
                     });
-                });
-                
+                }
+
                 // Hex input handler
-                hexInput.addEventListener('input', (e) => {
-                    let value = e.target.value;
-                    if (value && !value.startsWith('#')) {
-                        value = '#' + value;
-                    }
-                    
-                    if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
-                        const rgb = hexToRgb(value);
-                        const hsl = rgbToHsl(rgb.r * 255, rgb.g * 255, rgb.b * 255);
-                        currentHue = hsl.h;
-                        currentSat = hsl.s;
-                        currentLight = hsl.l;
-                        updateFromHSL();
-                    }
-                });
+                if (hexInput) {
+                    hexInput.addEventListener('input', (e) => {
+                        let value = e.target.value;
+                        if (value && !value.startsWith('#')) {
+                            value = '#' + value;
+                        }
+
+                        if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                            const rgb = hexToRgb(value);
+                            const hsl = rgbToHsl(rgb.r * 255, rgb.g * 255, rgb.b * 255);
+                            currentHue = hsl.h;
+                            currentSat = hsl.s;
+                            currentLight = hsl.l;
+                            updateFromHSL();
+                        }
+                    });
+                }
                 
                 // Initialize with current color
                 return function(hexColor) {
@@ -3336,33 +3369,7 @@
         }
 
         init();
-        
-        // Test popup visibility after a short delay
-        setTimeout(() => {
-            const testPopup = document.getElementById('colorPickerPopup');
-            console.log('=== POPUP TEST ===');
-            console.log('Popup element:', testPopup);
-            if (testPopup) {
-                console.log('Popup exists in DOM');
-                console.log('Initial display:', window.getComputedStyle(testPopup).display);
-                console.log('Initial visibility:', window.getComputedStyle(testPopup).visibility);
-                console.log('Initial classes:', testPopup.classList.toString());
-                // Temporarily show it to test
-                testPopup.style.display = 'block';
-                testPopup.style.left = '50%';
-                testPopup.style.top = '50%';
-                testPopup.style.transform = 'translate(-50%, -50%)';
-                testPopup.style.zIndex = '9999';
-                console.log('Popup forced visible for 2 seconds...');
-                setTimeout(() => {
-                    testPopup.style.display = 'none';
-                    console.log('Popup hidden again');
-                }, 2000);
-            } else {
-                console.error('POPUP ELEMENT NOT FOUND IN DOM!');
-            }
-        }, 1000);
-        
+
         // Initialize correct distortion style buttons based on initial shape
         const sphereStyles = document.getElementById('sphereDistortionStyles');
         const torusStyles = document.getElementById('torusDistortionStyles');
